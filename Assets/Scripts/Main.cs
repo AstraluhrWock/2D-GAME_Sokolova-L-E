@@ -6,22 +6,25 @@ namespace PlatformerMVC
 {
     public class Main : MonoBehaviour
     {
-        [SerializeField]
-        private LevelObjectView _playerView;
-        private AnimationConfig _config;
-        private SpriteAnimationController _playerAnimator;
+        [SerializeField] private LevelObjectView _playerView;
+        private PlayerController _playerController;
+
+       /* private ParalaxManager _paralaxManager;
+        [SerializeField] private Transform _camera;
+        [SerializeField] private Transform _back;*/
 
 
         private void Awake()
         {
-            _config = Resources.Load<AnimationConfig>("SpriteAnimatorCfg");
-            _playerAnimator = new SpriteAnimationController(_config);
-            _playerAnimator.StartAnimation(_playerView.spriteRenderer, AnimationState.Run, true, 10f);
+            _playerController = new PlayerController(_playerView);
+            // _paralaxManager = new ParalaxManager(_camera, _back); 
+            
         }
 
         void Update()
         {
-            _playerAnimator.Update();
+            _playerController.Update();
+          //  _paralaxManager.Update();
         }
     }
 }
