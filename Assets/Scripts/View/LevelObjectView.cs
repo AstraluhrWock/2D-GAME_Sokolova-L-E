@@ -9,6 +9,6 @@ namespace PlatformerMVC
         public Transform transform;
         public SpriteRenderer spriteRenderer;
         public Collider2D collider;
-        public Rigidbody rigidbody;
+        public Rigidbody2D rigidbody;
     }
 }

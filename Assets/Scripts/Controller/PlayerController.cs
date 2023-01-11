@@ -6,8 +6,10 @@ namespace PlatformerMVC
     {
         private AnimationConfig _config;
         private SpriteAnimationController _playerAnimator;
+        private ContactPooler _contactPooler;
         private LevelObjectView _playerView;
         private Transform _playerTransform;
+        private Rigidbody2D _playerRigitbody; 
 
         private float _xAxisInput;
         private bool _isJump;
@@ -23,55 +25,57 @@ namespace PlatformerMVC
 
         private float _jumpForce = 9f;
         private float _jumpThreshold = 1f;
-        private float _g = -9.8f;
-        private float _groundLevel = 0.5f;
-        private float _yVelocity;
+        private float _xVelocity = 0f;
+        private float _yVelocity = 0f;
 
         public PlayerController(LevelObjectView player)
         {
+            _playerView = player;
+            _playerTransform = player.transform;
+            _playerRigitbody = player.rigidbody;
             _config = Resources.Load<AnimationConfig>("SpriteAnimatorCfg");
             _playerAnimator = new SpriteAnimationController(_config);
             _playerAnimator.StartAnimation(player.spriteRenderer, AnimationState.Idle, true, _animationSpeed);
-            _playerView = player;
-            _playerTransform = player.transform;
+            _contactPooler = new ContactPooler(_playerView.collider);
+           
         }
 
 
         private void MoveTowards()
         {
-            _playerTransform.position += Vector3.right * (Time.deltaTime * _walkSpeed*(_xAxisInput < 0 ? -1:1));
+            _xVelocity += Time.fixedDeltaTime * _walkSpeed *(_xAxisInput < 0 ? -1:1);
+            _playerRigitbody.velocity = new Vector2(_xVelocity, _yVelocity);
             _playerTransform.localScale = _xAxisInput < 0 ? _leftScale : _rightScale;
         }
 
-        public bool IsGrounded()
-        {
-            return _playerTransform.position.y <= _groundLevel && _yVelocity <= 0;
-        }
 
         public void Update()
         {
             _playerAnimator.Update();
+            _contactPooler.Update();
             _xAxisInput = Input.GetAxis("Horizontal");
             _isJump = Input.GetAxis("Vertical") > 0;
+            _yVelocity = _playerRigitbody.velocity.y;
             _isMoving = Mathf.Abs(_xAxisInput) > _movingThreshold;
+            _playerAnimator.StartAnimation(_playerView.spriteRenderer, _isMoving ? AnimationState.Run : AnimationState.Idle, true, _animationSpeed);
 
             if (_isMoving)
             {
                 MoveTowards();
             }
 
-            if (IsGrounded())
+            else 
             {
-                _playerAnimator.StartAnimation(_playerView.spriteRenderer, _isMoving ? AnimationState.Run : AnimationState.Idle, true, _animationSpeed);
+                _xVelocity = 0;
+                _playerRigitbody.velocity = new Vector2 (_xVelocity, _yVelocity); // _playerRigitbody.velocity.y
+            }
 
-                if (_isJump && _yVelocity <= 0)
+            if (_contactPooler.IsGrounded)
+            {
+              
+                if (_isJump && _yVelocity <= _jumpThreshold)
                 {
-                    _yVelocity = _jumpForce;
-                }
-                else if (_yVelocity < 0)
-                {
-                    _yVelocity = 0;
-                    _playerTransform.position = new Vector3(_playerTransform.position.x, _groundLevel, _playerTransform.position.z);
+                    _playerRigitbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
                 }
             }
 
@@ -81,8 +85,6 @@ namespace PlatformerMVC
                 {
                     _playerAnimator.StartAnimation(_playerView.spriteRenderer, AnimationState.Jump, true, _animationSpeed);
                 }
-                _yVelocity += _g * Time.deltaTime;
-                _playerTransform.position += Vector3.up * (Time.deltaTime * _yVelocity);
             }
                 
         }

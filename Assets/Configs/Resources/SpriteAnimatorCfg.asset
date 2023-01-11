@@ -49,3 +49,4 @@ MonoBehaviour:
   - track: 2
     sprites:
     - {fileID: -1317210390, guid: 5d2d7f4ab1e201048be99e1dc5fc3488, type: 3}
+    - {fileID: 479914716, guid: 5d2d7f4ab1e201048be99e1dc5fc3488, type: 3}
