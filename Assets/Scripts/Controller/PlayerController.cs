@@ -8,8 +8,10 @@ namespace PlatformerMVC
         private SpriteAnimationController _playerAnimator;
         private ContactPooler _contactPooler;
         private LevelObjectView _playerView;
+
         private Transform _playerTransform;
-        private Rigidbody2D _playerRigitbody; 
+        private Rigidbody2D _playerRigitbody;
+        private int _health = 100;
 
         private float _xAxisInput;
         private bool _isJump;
@@ -28,7 +30,7 @@ namespace PlatformerMVC
         private float _xVelocity = 0f;
         private float _yVelocity = 0f;
 
-        public PlayerController(LevelObjectView player)
+        public PlayerController(InteractiveObjectView player)
         {
             _playerView = player;
             _playerTransform = player.transform;
@@ -37,9 +39,14 @@ namespace PlatformerMVC
             _playerAnimator = new SpriteAnimationController(_config);
             _playerAnimator.StartAnimation(player.spriteRenderer, AnimationState.Idle, true, _animationSpeed);
             _contactPooler = new ContactPooler(_playerView.collider);
+
+            player.TakeDamage += DamageOn;
            
         }
-
+       public void DamageOn(BulletView bullet)
+        {
+            _health -= bullet.DamagePoint;
+        }
 
         private void MoveTowards()
         {
@@ -51,6 +58,11 @@ namespace PlatformerMVC
 
         public void Update()
         {
+            if (_health <= 0)
+            {
+                _health = 0;
+                _playerView.spriteRenderer.enabled = false;
+            }
             _playerAnimator.Update();
             _contactPooler.Update();
             _xAxisInput = Input.GetAxis("Horizontal");

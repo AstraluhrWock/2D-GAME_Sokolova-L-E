@@ -7,7 +7,7 @@ namespace PlatformerMVC
     {
         public Transform muzzleTransform;
         public Transform emitterTransform;
-        public List<LevelObjectView> bullets;
+        public List<BulletView> bullets;
     }
 
 }
