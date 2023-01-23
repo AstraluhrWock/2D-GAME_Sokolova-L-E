@@ -10,11 +10,14 @@ namespace PlatformerMVC
         [SerializeField] private CannonView _cannonView;
         [SerializeField] private LevelGenerationView _levelView;
 
+        [SerializeField] private QuestObjectView _singleQuestItem;
+
         private PlayerController _playerController;
         private CannonController _cannonController;
         private EmitterController _emitterController;
         private LocationController _locationController;
         private CameraController _cameraController;
+        private QuestController _questController;
 
 
        /* private ParalaxManager _paralaxManager;
@@ -31,6 +34,9 @@ namespace PlatformerMVC
             // _paralaxManager = new ParalaxManager(_camera, _back); 
             _locationController = new LocationController(_levelView);
             _locationController.Start();
+
+            _questController = new QuestController(_playerView, new QuestCoinModel(), _singleQuestItem);
+            _questController.Reset();
             
         }
 

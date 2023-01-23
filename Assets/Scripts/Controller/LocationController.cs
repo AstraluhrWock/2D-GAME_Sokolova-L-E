@@ -17,6 +17,8 @@ namespace PlatformerMVC
         private bool _isBounded;
         private int[,] _map;
 
+        private MarchingSquaresController _marchingSquares;
+
         private int _countOfBorder = 4;
         public LocationController(LevelGenerationView levelView)
         {
@@ -28,6 +30,8 @@ namespace PlatformerMVC
             _smoothPercent = levelView.smoothPercent;
             _isBounded = levelView.isBounded;
             _map = new int[_mapWidth, _mapHeight];
+
+            
         }
 
         public void Start()
@@ -37,7 +41,10 @@ namespace PlatformerMVC
             {
                 SmoothMap();
             }
-            DrawTiles();
+            //DrawTiles();
+            _marchingSquares = new MarchingSquaresController();
+            _marchingSquares.GenerateGrid(_map, 1);
+            _marchingSquares.DrawTiles(_tilemap, _tile);
         }
 
         public void FillMap()
