@@ -3,15 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - QuestCoin
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - Platform
   - 
   - 
   - 
@@ -40,4 +41,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Cannon
+    uniqueID: 279372775
     locked: 0
